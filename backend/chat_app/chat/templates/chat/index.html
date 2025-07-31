@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar {
+            background: #2ecc71;
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .user-menu a:hover {
+            background-color: #27ae60;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .new-chat-btn:hover {
+            background: #27ae60;
+        }
+
+        .chat-list {
+            list-style: none;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-item:hover {
+            background-color: #f8f8f8;
+        }
+
+        .chat-item .chat-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-item .last-message {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .chat-preview {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Chat App</h1>
+        <div class="user-menu">
+            <span>Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="sidebar">
+            <button class="new-chat-btn" onclick="createNewChat()">
+                Create New Chat
+            </button>
+            
+            <div class="chat-list">
+                {% if chats %}
+                    {% for chat in chats %}
+                    <div class="chat-item" onclick="openChat('{{ chat.id }}')">
+                        <div class="chat-name">{{ chat.name }}</div>
+                        <div class="last-message">
+                            {% if chat.last_message %}
+                                {{ chat.last_message.content|truncatechars:50 }}
+                            {% else %}
+                                No messages yet
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i>📝</i>
+                        <p>No chats yet</p>
+                        <p>Click "Create New Chat" to start chatting!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="chat-preview">
+            <h2>Select a chat or create a new one</h2>
+            <p>Your messages will appear here</p>
+        </div>
+    </div>
+
+    <script>
+        function createNewChat() {
+            // You'll implement this function to handle new chat creation
+            // This could open a modal or redirect to a new chat page
+            window.location.href = "{}";
+        }
+
+        function openChat(chatId) {
+            // You'll implement this function to open a specific chat
+            window.location.href = `/chat/${chatId}/`;
+        }
+    </script>
+</body>
+</html>
