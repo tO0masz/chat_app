@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from . models import Chat
+from . models import Chat, Message
+from . forms import NewChatForm
 
 @login_required
 def home(request):
@@ -9,4 +11,31 @@ def home(request):
 
 @login_required
 def create_chat(request):
-    pass
+    if request.method == 'POST':
+        form = NewChatForm(request.POST, user=request.user)
+        if form.is_valid():
+            chat = form.save(commit=False)
+            chat.save()
+            # add self as participant
+            participants = form.cleaned_data['participants']
+            chat.participants.add(request.user, *participants)
+            chat.save()
+            return redirect('chat_home')
+    form = NewChatForm(user=request.user)
+    return render(request, 'chat/new_chat.html', {'form':form})
+
+
+@login_required
+def chat_detail(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id, participants=request.user).first()
+    if not chat:
+        return HttpResponse("You don't have access to this chat")
+    
+    if request.method == 'POST' and 'message' in request.POST:
+        message_content = request.POST['message']
+        Message.objects.create(
+            content=message_content,
+            chat=chat,
+            sender=request.user
+        )
+    return render(request, 'chat/chat_detail.html', {'chat': chat})
