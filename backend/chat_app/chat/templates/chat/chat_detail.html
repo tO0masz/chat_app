@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ chat.name }} - Chat App</title>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <style>
         * {
             margin: 0;
@@ -139,24 +140,24 @@
             <h2>Chat History</h2>
         </div>
 
-        <div class="chat-messages">
-            {% for message in chat.messages.all %}
-                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-                    <div class="message-info">
-                        {{ message.sender.username }} - {{ message.timestamp|date:"M d, Y H:i" }}
-                    </div>
-                    <div class="message-content">
-                        {{ message.content }}
-                    </div>
-                </div>
-            {% empty %}
-                <p style="text-align: center; color: #666;">No messages yet. Start the conversation!</p>
-            {% endfor %}
+        <div class="chat-messages" 
+             id="messages"
+             hx-get="{% url 'get_messages' chat.id %}"
+             hx-trigger="every 2s"
+             hx-swap="innerHTML">
+            {% include 'chat/partials/_messages.html' %}
         </div>
 
-        <form class="chat-input" method="post">
+        <form class="chat-input" 
+              hx-post="{{ request.path }}"
+              hx-target="#messages"
+              hx-swap="innerHTML">
             {% csrf_token %}
-            <input type="text" name="message" placeholder="Type your message..." required>
+            <input type="text" 
+                   name="message" 
+                   placeholder="Type your message..." 
+                   required
+                   hx-on::after-request="this.value = ''">
             <button type="submit">Send</button>
         </form>
     </div>

@@ -32,10 +32,21 @@ def chat_detail(request, chat_id):
         return HttpResponse("You don't have access to this chat")
     
     if request.method == 'POST' and 'message' in request.POST:
-        message_content = request.POST['message']
-        Message.objects.create(
-            content=message_content,
-            chat=chat,
-            sender=request.user
-        )
+        message_content = request.POST['message'].strip()
+        if message_content:
+            Message.objects.create(
+                content=message_content,
+                chat=chat,
+                sender=request.user
+            )
+            if request.headers.get('HX-Request'):
+                return render(request, 'chat/partials/_messages.html', {'chat': chat})
+            
     return render(request, 'chat/chat_detail.html', {'chat': chat})
+
+@login_required
+def get_messages(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id, participants=request.user).first()
+    if not chat:
+        return HttpResponse("Chat not found", status=404)
+    return render(request, 'chat/partials/_messages.html', {'chat': chat})

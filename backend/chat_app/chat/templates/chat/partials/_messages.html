@@ -1,0 +1,12 @@
+{% for message in chat.messages.all %}
+    <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+        <div class="message-info">
+            {{ message.sender.username }} - {{ message.timestamp|date:"M d, Y H:i" }}
+        </div>
+        <div class="message-content">
+            {{ message.content }}
+        </div>
+    </div>
+{% empty %}
+    <p style="text-align: center; color: #666;">No messages yet. Start the conversation!</p>
+{% endfor %}
