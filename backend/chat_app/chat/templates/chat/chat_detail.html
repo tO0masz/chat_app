@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ chat.name }} - Chat App</title>
-    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <style>
         * {
             margin: 0;
@@ -140,26 +139,88 @@
             <h2>Chat History</h2>
         </div>
 
-        <div class="chat-messages" 
-             id="messages"
-             hx-get="{% url 'get_messages' chat.id %}"
-             hx-trigger="every 2s"
-             hx-swap="innerHTML">
+        <div class="chat-messages" id="chat-messages">
             {% include 'chat/partials/_messages.html' %}
         </div>
 
-        <form class="chat-input" 
-              hx-post="{{ request.path }}"
-              hx-target="#messages"
-              hx-swap="innerHTML">
+        <form class="chat-input" id="chat-form">
             {% csrf_token %}
             <input type="text" 
+                   id="chat-message-input" 
                    name="message" 
                    placeholder="Type your message..." 
-                   required
-                   hx-on::after-request="this.value = ''">
+                   required>
             <button type="submit">Send</button>
         </form>
+
+        <script>
+            const chatSocket = new WebSocket(
+                (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/chat/{{ chat.id }}/'
+            );
+
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageForm = document.getElementById('chat-form');
+            const messageInput = document.getElementById('chat-message-input');
+
+            // Scroll to bottom of messages
+            function scrollToBottom() {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Initial scroll
+            scrollToBottom();
+
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                
+                if (data.type === 'chat.message') {
+                    // Create message element
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${data.is_sender ? 'sent' : 'received'}`;
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-info">
+                            ${data.username} • ${data.timestamp}
+                        </div>
+                        <div class="message-content">
+                            ${data.message}
+                        </div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageDiv);
+                    scrollToBottom();
+                }
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            messageForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const message = messageInput.value.trim();
+                if (message) {
+                    // Send message to WebSocket
+                    chatSocket.send(JSON.stringify({
+                        'type': 'chat.message',
+                        'message': message
+                    }));
+                    
+                    // Clear input
+                    messageInput.value = '';
+                }
+            });
+
+            // Handle reconnection
+            function connect() {
+                chatSocket.addEventListener('close', function() {
+                    console.log('Reconnecting...');
+                    setTimeout(connect, 1000);
+                });
+            }
+            connect();
+        </script>
     </div>
 </body>
 </html>
