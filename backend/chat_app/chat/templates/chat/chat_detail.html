@@ -137,6 +137,7 @@
     <div class="chat-container">
         <div class="chat-header">
             <h2>Chat History</h2>
+            <div class="online-participants"><h3>Online: {{ chat.online_participants }}</h3></div>
         </div>
 
         <div class="chat-messages" id="chat-messages">
@@ -173,6 +174,11 @@
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
                 
+                if(data.type === 'chat.update.online') {
+                    // Update online participants count
+                    document.querySelector('.online-participants').textContent = `Online: ${data.online_participants}`;
+                }
+
                 if (data.type === 'chat.message') {
                     // Create message element
                     const messageDiv = document.createElement('div');

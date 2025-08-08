@@ -8,6 +8,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.chat_id = self.scope['url_route']['kwargs']['chat_id']
         self.room_group_name = f'chat_{self.chat_id}'
+        self.user = self.scope['user']
+
+        # Accept the connection first
+        await self.accept()
 
         # Join room group
         await self.channel_layer.group_add(
@@ -15,18 +19,49 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        await self.accept()
+        # Update online participants count
+        await self.add_online_participant()
+
+        # Send message to room group that new user joined
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat.update.online',
+                'online_participants': await self.get_online_participants(),
+            }
+        )
 
     async def disconnect(self, close_code):
-        # Leave room group
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        if hasattr(self, 'room_group_name'):  # Check if connect was successful
+            await self.remove_online_participant()
+
+            # Send message about user leaving
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat.update.online',
+                    'online_participants': await self.get_online_participants(),
+                }
+            )
+
+            # Leave room group
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_type = data.get('type')
+
+        if message_type == 'chat.update.online':
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat.update.online',
+                    'online_participants': await self.get_online_participants()
+                }
+            )
 
         if message_type == 'chat.message':
             message = data['message']
@@ -46,10 +81,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'is_sender': True
                     }
                 )
-
     async def chat_message(self, event):
         # Send message to WebSocket
-        event['is_sender'] = self.scope['user'].username == event['username']
+        event['is_sender'] = self.user.username == event['username']
+        await self.send(text_data=json.dumps(event))
+
+    async def chat_update_online(self, event):
+        # Send online status update to WebSocket
         await self.send(text_data=json.dumps(event))
 
     @database_sync_to_async
@@ -64,3 +102,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(f"Error saving message: {e}")
             return None
+    
+    @database_sync_to_async
+    def add_online_participant(self):
+        try:
+            chat = Chat.objects.get(id=self.chat_id)
+            chat.online_participants = chat.online_participants + 1
+            chat.save()
+        except Exception as e:
+            print(f"Error updating online participants: {e}")
+
+    @database_sync_to_async
+    def remove_online_participant(self):
+        try:
+            chat = Chat.objects.get(id=self.chat_id)
+            chat.online_participants = chat.online_participants - 1
+            if chat.online_participants < 0:
+                chat.online_participants = 0
+            chat.save()
+        except Exception as e:
+            print(f"Error updating online participants: {e}")
+    
+    @database_sync_to_async
+    def get_online_participants(self):
+        try:
+            chat = Chat.objects.get(id=self.chat_id)
+            return chat.online_participants
+        except Chat.DoesNotExist:
+            return 0
+        except Exception as e:
+            print(f"Error retrieving online participants: {e}")
+            return 0
