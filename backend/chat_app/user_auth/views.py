@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as user_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from .models import get_friends, Friendship
 
 def home(request):
     if request.method == 'POST':
@@ -39,3 +40,24 @@ def register(request):
             print(f"Error creating user: {e}")
             content['error'] = 'register_error'
     return render(request, 'user_auth/register.html', content)
+
+def profile(request):
+    return render(request, 'user_auth/profile.html', {'user': request.user})
+
+def friends(request):
+    friends = get_friends(request.user)
+    invitations = Friendship.objects.filter(to_user=request.user, accepted=False)
+    return render(request, 'user_auth/friends.html', {'friends': friends, 'invitations': invitations})
+
+def accept_friendship(request, username):
+    user = User.objects.get(username=username)
+    friendship = Friendship.objects.get(from_user=user, to_user=request.user)
+    friendship.accepted = True
+    friendship.save()
+    return redirect('friends')
+
+def reject_friendship(request, username):
+    user = User.objects.get(username=username)
+    friendship = Friendship.objects.get(from_user=user, to_user=request.user)
+    friendship.delete()
+    return redirect('friends')

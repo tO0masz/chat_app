@@ -64,7 +64,22 @@
         text-decoration: none;
         color: white;
     }
+    .navbar {
+            background: #2ecc71;
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 </style>
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar">
+        <a href="{% url 'chat_home' %}" class="back-button">← Back to Chats</a>
+    </nav>
 {% endblock %}
 
 {% block content %}
@@ -74,9 +89,8 @@
             <div class="card-body">
                 <p><strong>Username:</strong> {{ user.username }}</p>
                 <p><strong>Email:</strong> {{ user.email }}</p>
-                <a href="#" class="btn btn-primary">Friends List</a>
+                <a href="{% url 'friends' %}" class="btn btn-primary">Friends List</a>
             </div>
         </div>
     </div>
-{% endblock %}
 {% endblock %}
