@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App Login</title>
+{% extends 'chat_app/base.html' %}
+
+{% block styles %}
     <style>
         body {
             margin: 0;
@@ -99,8 +96,9 @@
             text-decoration: underline;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <div class="login-container">
         <div class="login-header">
             <h1>Welcome to Chat App</h1>
@@ -129,5 +127,4 @@
             <p>Don't have an account? <a href="{}">Register here</a></p>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
