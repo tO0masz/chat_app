@@ -21,3 +21,10 @@ def get_friends(user):
     to_user = Friendship.objects.filter(to_user=user, accepted=True).values_list('from_user', flat=True)
     users_ids = set(from_user).union(to_user)
     return User.objects.filter(id__in=users_ids)
+
+# return users to/who sent friendship requests
+def get_friendship_requests_users(user):
+    from_user = Friendship.objects.filter(from_user=user, accepted=False).values_list('to_user', flat=True)
+    to_user = Friendship.objects.filter(to_user=user, accepted=False).values_list('from_user', flat=True)
+    users_ids = set(from_user).union(to_user)
+    return User.objects.filter(id__in=users_ids)

@@ -240,6 +240,7 @@
         <h1>Chat App</h1>
         <div class="user-menu">
             <a href="{% url 'profile' %}">Welcome, {{ user.username }}</a>
+            <a href="{% url 'search_friends' %}">Search friends</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
     </nav>

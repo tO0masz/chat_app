@@ -3,6 +3,9 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from . models import Chat, Message
 from . forms import NewChatForm
+from django.contrib.auth.models import User
+from user_auth.models import get_friends
+from user_auth.models import get_friendship_requests_users
 
 @login_required
 def home(request):
@@ -50,3 +53,10 @@ def get_messages(request, chat_id):
     if not chat:
         return HttpResponse("Chat not found", status=404)
     return render(request, 'chat/partials/_messages.html', {'chat': chat})
+
+@login_required
+def search_friends(request):
+    exclude_users = get_friends(request.user)
+    invitations_users = get_friendship_requests_users(request.user)
+    users = User.objects.exclude(id__in=exclude_users).exclude(id=request.user.id).exclude(id__in=invitations_users)
+    return render(request, 'chat/search_friends.html', {'users': users})

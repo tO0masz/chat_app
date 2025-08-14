@@ -61,3 +61,8 @@ def reject_friendship(request, username):
     friendship = Friendship.objects.get(from_user=user, to_user=request.user)
     friendship.delete()
     return redirect('friends')
+
+def add_friendship(request, user_id):
+    user = User.objects.get(id=user_id)
+    Friendship.objects.create(from_user=request.user, to_user=user)
+    return redirect('friends')
