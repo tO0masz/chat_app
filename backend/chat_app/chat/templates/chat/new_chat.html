@@ -124,13 +124,22 @@
             background: #27ae60;
         }
 
-        .cancel-btn {
-            background: #e74c3c;
-            color: white;
+        .create-btn {
+            width: 50%;
         }
 
-        .cancel-btn:hover {
-            background: #c0392b;
+        .cancel-link {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            width: 50%;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cancel-link:hover {
+            background-color: #bb2d3b;
         }
 
         .errorlist {
@@ -186,7 +195,7 @@
             </div>
 
             <div class="buttons">
-                <button type="button" class="cancel-btn">Cancel</button>
+                <a class="create-btn cancel-link" href="{% url 'chat_home' %}">Cancel</a>
                 <button type="submit" class="create-btn" href="{% url 'create_chat' %}">Create Chat</button>
             </div>
         </form>

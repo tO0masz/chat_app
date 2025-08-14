@@ -129,7 +129,7 @@
                         <div class="friend-name">{{ friend.username }}</div>
                     </div>
                     <div class="friend-actions">
-                        <a href="" class="btn btn-primary">Start Chat</a>
+                        <a href="{% url 'create_chat' %}" class="btn btn-primary">Start Chat</a>
                     </div>
                 </li>
             {% endfor %}
