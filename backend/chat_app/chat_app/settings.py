@@ -75,10 +75,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'chat_app.wsgi.application'
 ASGI_APPLICATION = 'chat_app.asgi.application'
 
-# In future change this to production backend eg. redis
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
     },
 }
 
