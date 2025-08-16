@@ -10,12 +10,40 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(120deg, #2ecc71, #27ae60);
+            background: #f5f5f5;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: #2ecc71;
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 2rem;
         }
 
         .container {
@@ -152,12 +180,15 @@
 {% endblock %}
 
 {% block navbar %}
-
+    <nav class="navbar">
+        <a href="{% url 'chat_home' %}">← Back to Chats</a>
+    </nav>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>Create New Chat</h1>
+    <div class="main-content">
+        <div class="container">
+            <h1>Create New Chat</h1>
         
         <form method="post">
             {% csrf_token %}
@@ -199,5 +230,6 @@
                 <button type="submit" class="create-btn" href="{% url 'create_chat' %}">Create Chat</button>
             </div>
         </form>
+        </div>
     </div>
 {% endblock %}

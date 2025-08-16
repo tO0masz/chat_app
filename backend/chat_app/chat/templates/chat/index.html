@@ -29,25 +29,6 @@
         .navbar h1 {
             font-size: 1.5rem;
         }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-menu a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .user-menu a:hover {
-            background-color: #27ae60;
-        }
-
         .chat-container {
             flex: 1;
             max-width: 1200px;
@@ -236,14 +217,7 @@
 {% endblock %}
 
 {% block navbar %}
-    <nav class="navbar">
         <h1>Chat App</h1>
-        <div class="user-menu">
-            <a href="{% url 'profile' %}">Welcome, {{ user.username }}</a>
-            <a href="{% url 'search_friends' %}">Search friends</a>
-            <a href="{% url 'logout' %}">Logout</a>
-        </div>
-    </nav>
 {% endblock %}
 
 {% block content %}

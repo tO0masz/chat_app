@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ chat.name }} - Chat App</title>
+    <style>
+    .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .user-menu a:hover {
+            background-color: #27ae60;
+        }
+        </style>
     {% block styles %}
 
     {% endblock %}
 </head>
 <body>
-    {% block navbar %}
-    <!-- This will be overridden by chat_details.html -->
-    {% endblock %}
+     <nav class="navbar">
+        {% block navbar %}
+        <!-- This will be overridden by chat_details.html -->
+        {% endblock %}
+        <div class="user-menu">
+            <a href="{% url 'profile' %}">Welcome, {{ user.username }}</a>
+            <a href="{% url 'search_friends' %}">Search friends</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
 
     {% block content %}
     <!-- This will be overridden -->

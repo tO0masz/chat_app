@@ -22,12 +22,39 @@
             color: white;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .navbar h1 {
-            font-size: 1.5rem;
+        .back-button {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            display: inline-block;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .back-button:hover {
+            opacity: 1;
+        }
+
+        .chat-info {
+            padding: 1.5rem 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-info h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .participants {
+            font-size: 1rem;
+            color: #666;
         }
 
         .user-menu {
@@ -51,7 +78,7 @@
         .chat-container {
             flex: 1;
             max-width: 1200px;
-            margin: 2rem auto;
+            margin: 0 auto 2rem;
             padding: 0 1rem;
             width: 100%;
             display: flex;
@@ -59,7 +86,7 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            height: calc(100vh - 120px);
+            height: calc(100vh - 240px); /* Adjusted for chat info section */
         }
 
         .chat-header {
@@ -238,14 +265,16 @@
 {% block navbar %}
     <nav class="navbar">
         <a href="{% url 'chat_home' %}" class="back-button">← Back to Chats</a>
-        <h1>{{ chat.name }}</h1>
-        <div class="participants">
-            Participants: {{ chat.participants.all|join:", " }}
-        </div>
     </nav>
 {% endblock %}
 
 {% block content %}
+    <div class="chat-info">
+        <h1>{{ chat.name }}</h1>
+        <div class="participants">
+            Participants: {{ chat.participants.all|join:", " }}
+        </div>
+    </div>
     <div class="chat-container">
         <div class="chat-header">
             <h2>Chat History</h2>

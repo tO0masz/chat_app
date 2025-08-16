@@ -1,6 +1,10 @@
-{% extends 'chat_app/base.html' %}
-
-{% block styles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ chat.name }} - Chat App</title>    
+    
     <style>
         body {
             margin: 0;
@@ -96,9 +100,8 @@
             text-decoration: underline;
         }
     </style>
-{% endblock %}
 
-{% block content %}
+<body>
     <div class="login-container">
         <div class="login-header">
             <h1>Welcome to Chat App</h1>
@@ -127,4 +130,5 @@
             <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
         </div>
     </div>
-{% endblock %}
+</body>
+</html>
