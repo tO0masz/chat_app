@@ -59,4 +59,7 @@ def search_friends(request):
     exclude_users = get_friends(request.user)
     invitations_users = get_friendship_requests_users(request.user)
     users = User.objects.exclude(id__in=exclude_users).exclude(id=request.user.id).exclude(id__in=invitations_users)
+    search_query = request.GET.get('query', '').strip()
+    if search_query:
+        users = users.filter(username__icontains=search_query)
     return render(request, 'chat/search_friends.html', {'users': users})

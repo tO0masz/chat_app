@@ -1,6 +1,7 @@
 {% extends 'chat_app/base.html' %}
 
 {% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
     * {
         margin: 0;
@@ -29,6 +30,41 @@
         color: #2ecc71;
         margin-bottom: 1.5rem;
         font-size: 1.8rem;
+    }
+
+    .search-form {
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-form input[type="text"] {
+        flex: 1;
+        padding: 0.8rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        margin-right: 0.5rem;
+    }
+
+    .search-form input[type="text"]:focus {
+        outline: none;
+        border-color: #2ecc71;
+    }
+
+    .search-form button {
+        background: #2ecc71;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-form button:hover {
+        background: #27ae60;
     }
 
     .user-item {
@@ -87,6 +123,12 @@
 {% block content %}
 <div class="user-list">
     <h2>Search Friends</h2>
+    <form class="search-form" action="{% url 'search_friends' %}" method="GET">
+        <input type="text" name="query" placeholder="Search users..." value="{{ request.GET.query }}">
+        <button type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
     {% if users %}
         {% for user in users %}
             <div class="user-item">
