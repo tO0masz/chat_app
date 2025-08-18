@@ -1,0 +1,26 @@
+version: '3.8'  # Specifies the Docker Compose file format version
+
+services:
+  db:  # PostgreSQL service definition
+    image: postgres:15  # Uses official PostgreSQL 15 image
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persists database data even if container is removed
+    environment:
+      - POSTGRES_DB=django  # Creates a database named django
+      - POSTGRES_USER=django  # Creates a user named django
+      - POSTGRES_PASSWORD=somepassword  # Sets the password for the django user
+    ports:
+      - "5432:5432"  # Maps host port 5432 to container port 5432
+    restart: always  # Automatically restarts the container if it fails
+
+  redis:  # Redis service definition
+    image: redis:7  # Uses official Redis 7 image
+    ports:
+      - "6379:6379"  # Maps host port 6379 to container port 6379
+    volumes:
+      - redis_data:/data  # Persists Redis data even if container is removed
+    restart: always  # Automatically restarts the container if it fails
+
+volumes:  # Defines named volumes used by services
+  postgres_data:  # Volume for PostgreSQL data persistence
+  redis_data:    # Volume for Redis data persistence
