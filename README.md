@@ -95,30 +95,12 @@ Python dependencies are listed in requirements.txt:
 
 - **cd chat_app**
 
-3. Create .env file
-
-Create a .env file in the project root (next to docker-compose.yml) with content like:
-
-- **POSTGRES_DB=chatdb**
-
-- **POSTGRES_USER=chatuser**
-
-- **POSTGRES_PASSWORD=chatpassword**
-
-- **POSTGRES_HOST=postgres**
-
-- **POSTGRES_PORT=5432**
-
-- **REDIS_HOST=redis**
-
-- **REDIS_PORT=6379**
-
 
 
 ⚠️ Do not commit your .env file. Instead, provide an .env.example for contributors.
 
 
-3. Start services with Docker:
+2. Start services with Docker:
 
 - **docker-compose up -d**
 
@@ -129,7 +111,7 @@ This will spin up:
 
 - **Redis** server
 
-4. Run Django server
+3. Run Django server
 
 If you want to run Django locally (outside Docker):
 
