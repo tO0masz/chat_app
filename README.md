@@ -10,32 +10,32 @@ The project uses PostgreSQL as the database (via Docker) and Redis as the channe
 ## 🚀 Features
 
 
-Real-time chat with WebSockets
+- Real-time chat with WebSockets
 
-Django Channels with Redis as the channel layer
+- Django Channels with Redis as the channel layer
 
-PostgreSQL as the database
+- PostgreSQL as the database
 
-HTMX for dynamic frontend interactions
+- HTMX for dynamic frontend interactions
 
-Fully containerized environment with Docker Compose
+- Containerized environment with Docker Compose
 
 
 
 ## 🛠 Tech Stack
 
 
-**Backend:** Django 4.2+, Django Channels
+- **Backend:** Django 4.2+, Django Channels
 
-**WebSockets Server**: Daphne
+- **WebSockets Server**: Daphne
 
-**Database:** PostgreSQL (Docker)
+- **Database:** PostgreSQL (Docker)
 
-**Channel Layer:** Redis (Docker)
+- **Channel Layer:** Redis (Docker)
 
-**Frontend Enhancements:** HTMX
+- **Frontend Enhancements:** HTMX
 
-**Environment:** Docker & Docker Compose
+- **Environment:** Docker & Docker Compose
 
 
 
@@ -61,22 +61,29 @@ CHAT_APP/
 ## ⚙️ Requirements
 
 
-**Python 3.10+**
+- **Python 3.10+**
 
-**Docker & Docker Compose**
+- **Docker & Docker Compose**
 
-**Virtual environment** 
+- **Virtual environment** 
 
 Python dependencies are listed in requirements.txt:
 
-**Django>=4.2.0,<5.0.0**
-**python-dotenv>=1.0.0**
-**channels>=4.0.0**
-**channels-redis>=4.1.0**
-**django-htmx>=1.17.0**
-**redis>=4.6.0**
-**asgiref>=3.7.0**
-**daphne>=4.0.0**
+- **Django>=4.2.0,<5.0.0**
+
+- **python-dotenv>=1.0.0**
+
+- **channels>=4.0.0**
+
+- **channels-redis>=4.1.0**
+
+- **django-htmx>=1.17.0**
+
+- **redis>=4.6.0**
+
+- **asgiref>=3.7.0**
+
+- **daphne>=4.0.0**
 
 
 
@@ -84,36 +91,43 @@ Python dependencies are listed in requirements.txt:
 
 
 1. Clone the repository
-**git clone https://github.com/your-username/chat_app.git**
-**cd chat_app**
+- **git clone https://github.com/tO0masz/chat_app.git**
 
-2. Create .env file
+- **cd chat_app**
+
+3. Create .env file
 
 Create a .env file in the project root (next to docker-compose.yml) with content like:
 
-**POSTGRES_DB=chatdb**
-**POSTGRES_USER=chatuser**
-**POSTGRES_PASSWORD=chatpassword**
-**POSTGRES_HOST=postgres**
-**POSTGRES_PORT=5432**
+- **POSTGRES_DB=chatdb**
 
-**REDIS_HOST=redis**
-**REDIS_PORT=6379**
+- **POSTGRES_USER=chatuser**
+
+- **POSTGRES_PASSWORD=chatpassword**
+
+- **POSTGRES_HOST=postgres**
+
+- **POSTGRES_PORT=5432**
+
+- **REDIS_HOST=redis**
+
+- **REDIS_PORT=6379**
 
 
 
 ⚠️ Do not commit your .env file. Instead, provide an .env.example for contributors.
 
 
-3. Start services with Docker
-**docker-compose up -d**
+3. Start services with Docker:
+
+- **docker-compose up -d**
 
 
 This will spin up:
 
-**PostgreSQL** database
+- **PostgreSQL** database
 
-**Redis** server
+- **Redis** server
 
 4. Run Django server
 
