@@ -85,6 +85,10 @@ Python dependencies are listed in requirements.txt:
 
 - **daphne>=4.0.0**
 
+- **psycopg>=3.1.0**
+
+- **psycopg2>=2.9.0**
+
 
 
 ## ▶️ Getting Started
