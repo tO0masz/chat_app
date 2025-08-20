@@ -213,6 +213,19 @@
                 grid-template-columns: 1fr;
             }
         }
+        .delete-chat{
+            display: flex;
+            justify-content: flex-end;
+        }
+        .delete-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
     </style>
 {% endblock %}
 
@@ -238,6 +251,12 @@
                             {% else %}
                                 No messages yet
                             {% endif %}
+                        </div>
+                        <div class="delete-chat">
+                            <form method="POST" action="{% url 'delete_chat' chat.id %}" onclick="event.stopPropagation();" onsubmit="return confirm('Are you sure you want to delete this chat?');">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
                         </div>
                     </div>
                     {% endfor %}

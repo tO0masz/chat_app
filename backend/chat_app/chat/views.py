@@ -91,3 +91,10 @@ def search_friends(request):
     if search_query:
         users = users.filter(username__icontains=search_query)
     return render(request, 'chat/search_friends.html', {'users': users})
+
+@login_required
+def delete_chat(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id).first()
+    if chat:
+        chat.delete()
+    return redirect('chat_home')
