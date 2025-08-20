@@ -225,6 +225,29 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            width: 75px;
+            text-align: center;
+            font-weight: 10px;
+            margin: 5px;
+        }
+        .edit-chat {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .edit-chat-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 75px;
+            text-decoration: none;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-weight: 10px;
+            margin: 5px;
         }
     </style>
 {% endblock %}
@@ -256,6 +279,10 @@
                             <form method="POST" action="{% url 'delete_chat' chat.id %}" onclick="event.stopPropagation();" onsubmit="return confirm('Are you sure you want to delete this chat?');">
                                 {% csrf_token %}
                                 <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                        <div class="edit-chat">
+                                <a class="edit-chat-button" href="{% url 'edit_chat' chat.id %}">Edit</a>
                             </form>
                         </div>
                     </div>

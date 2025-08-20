@@ -37,24 +37,6 @@ def create_chat(request, user_id=None):
             return redirect('chat_home')
     return render(request, 'chat/new_chat.html', {'form':form})
 
-@login_required
-def create_private_chat(request, user_id):
-
-    if request.method == 'POST':
-        form = NewChatForm(request.POST, single_user=User.objects.filter(id=user_id))
-        if form.is_valid():
-            chat = form.save(commit=False)
-            chat.save()
-            participants = form.cleaned_data['participants']
-            chat.participants.add(request.user, *participants)
-            chat.save()
-            return redirect('chat_home')
-
-    user = User.objects.filter(id=user_id)
-    form = NewChatForm(single_user=user)
-    return render(request, 'chat/new_chat.html', {'form': form})
-
-
 
 @login_required
 def chat_detail(request, chat_id):
@@ -98,3 +80,14 @@ def delete_chat(request, chat_id):
     if chat:
         chat.delete()
     return redirect('chat_home')
+
+@login_required
+def edit_chat(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id).first()
+    if request.method == 'POST':
+        form = NewChatForm(request.POST, chat=chat)
+        if form.is_valid():
+            chat = form.save()
+            return redirect('chat_home')
+    form = NewChatForm(instance=chat, chat=Chat.objects.filter(id=chat_id).first())
+    return render(request, 'chat/new_chat.html', {'form':form})
