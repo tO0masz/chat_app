@@ -41,14 +41,17 @@ def register(request):
             content['error'] = 'register_error'
     return render(request, 'user_auth/register.html', content)
 
+@login_required
 def profile(request):
     return render(request, 'user_auth/profile.html', {'user': request.user})
 
+@login_required
 def friends(request):
     friends = get_friends(request.user)
     invitations = Friendship.objects.filter(to_user=request.user, accepted=False)
     return render(request, 'user_auth/friends.html', {'friends': friends, 'invitations': invitations})
 
+@login_required
 def accept_friendship(request, username):
     user = User.objects.get(username=username)
     friendship = Friendship.objects.get(from_user=user, to_user=request.user)
@@ -56,12 +59,14 @@ def accept_friendship(request, username):
     friendship.save()
     return redirect('friends')
 
+@login_required
 def reject_friendship(request, username):
     user = User.objects.get(username=username)
     friendship = Friendship.objects.get(from_user=user, to_user=request.user)
     friendship.delete()
     return redirect('friends')
 
+@login_required
 def add_friendship(request, user_id):
     user = User.objects.get(id=user_id)
     Friendship.objects.create(from_user=request.user, to_user=user)

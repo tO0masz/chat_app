@@ -13,9 +13,20 @@ def home(request):
     return render(request, 'chat/index.html', {'chats':chats})
 
 @login_required
-def create_chat(request):
+def create_chat(request, user_id=None):
+
+    if user_id:
+        user = User.objects.filter(id=user_id)
+        form = NewChatForm(single_user=user)
+    else:
+        user = request.user
+        form = NewChatForm(user=user)
+
     if request.method == 'POST':
-        form = NewChatForm(request.POST, user=request.user)
+        if user_id:
+            form = NewChatForm(request.POST, single_user=user)
+        else:
+            form = NewChatForm(request.POST, user=user)
         if form.is_valid():
             chat = form.save(commit=False)
             chat.save()
@@ -24,8 +35,25 @@ def create_chat(request):
             chat.participants.add(request.user, *participants)
             chat.save()
             return redirect('chat_home')
-    form = NewChatForm(user=request.user)
     return render(request, 'chat/new_chat.html', {'form':form})
+
+@login_required
+def create_private_chat(request, user_id):
+
+    if request.method == 'POST':
+        form = NewChatForm(request.POST, single_user=User.objects.filter(id=user_id))
+        if form.is_valid():
+            chat = form.save(commit=False)
+            chat.save()
+            participants = form.cleaned_data['participants']
+            chat.participants.add(request.user, *participants)
+            chat.save()
+            return redirect('chat_home')
+
+    user = User.objects.filter(id=user_id)
+    form = NewChatForm(single_user=user)
+    return render(request, 'chat/new_chat.html', {'form': form})
+
 
 
 @login_required

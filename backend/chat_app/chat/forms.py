@@ -13,6 +13,13 @@ class NewChatForm(forms.ModelForm):
             'participants': forms.CheckboxSelectMultiple()
         }
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user')
-        super().__init__(*args, **kwargs)
-        self.fields['participants'].queryset = get_friends(user)
+        if 'single_user' in kwargs:
+            user = kwargs.pop('single_user')
+            super().__init__(*args, **kwargs)
+            self.fields['participants'].queryset = user
+            self.initial['participants'] = list(user.values_list('id', flat=True))
+            self.fields['participants'].disabled = True
+        else:
+            user = kwargs.pop('user')
+            super().__init__(*args, **kwargs)
+            self.fields['participants'].queryset = get_friends(user)
