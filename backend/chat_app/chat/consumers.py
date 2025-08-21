@@ -1,8 +1,11 @@
+import base64
+import uuid
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.utils import timezone
 import json
 from .models import Message, Chat
+from django.core.files.base import ContentFile
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -81,6 +84,42 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'is_sender': True
                     }
                 )
+            
+        if message_type == 'chat.file':
+
+            chatFile = await self.save_file(data['fileData'])
+            if chatFile:
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'chat.file',
+                        'file_url': chatFile.file.url,
+                        'username': self.scope['user'].username,
+                        'timestamp': chatFile.timestamp.strftime("%b %d, %Y %H:%M"),
+                        'is_sender': True
+                    }
+                )
+
+    @database_sync_to_async
+    def save_file(self, file_data):
+        try:
+            format, b64str = file_data.split(';base64,')
+            ext = format.split('/')[-1]
+            file_bytes = base64.b64decode(b64str)
+            chat = Chat.objects.get(id=self.chat_id)
+            return Message.objects.create(
+                chat=chat,
+                sender=self.scope['user'],
+                file=ContentFile(file_bytes, name=f"{uuid.uuid4()}.{ext}")
+            )
+        except Exception as e:
+            print(f"Error saving file: {e}")
+            return None
+
+    async def chat_file(self, event):
+        # Send file message to WebSocket
+        await self.send(text_data=json.dumps(event))
+
     async def chat_message(self, event):
         # Send message to WebSocket
         event['is_sender'] = self.user.username == event['username']

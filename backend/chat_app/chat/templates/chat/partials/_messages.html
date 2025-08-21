@@ -4,7 +4,11 @@
             {{ message.sender.username }} - {{ message.timestamp|date:"M d, Y H:i" }}
         </div>
         <div class="message-content">
-            {{ message.content }}
+            {% if message.content != None %}
+                {{ message.content }}
+            {% else %}
+                <img src="{{ message.file.url }}" alt="uploaded file">
+            {% endif %}
         </div>
     </div>
 {% empty %}

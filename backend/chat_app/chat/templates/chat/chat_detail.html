@@ -292,7 +292,13 @@
                    name="message" 
                    placeholder="Type your message..." 
                    required>
-            <button type="submit">Send</button>
+            <button type="submit" id="chat-message-submit">Send</button>
+        </form>
+        
+        <form class="chat-input" id="chat-file-form">
+            {% csrf_token %}
+            <input type="file" id="chat-file-input" name="file" required>
+            <button type="submit" id="chat-file-submit">Upload</button>
         </form>
 
         <script>
@@ -303,6 +309,9 @@
             const messagesContainer = document.getElementById('chat-messages');
             const messageForm = document.getElementById('chat-form');
             const messageInput = document.getElementById('chat-message-input');
+
+            const fileInput = document.getElementById('chat-file-input');
+            const chatFileForm = document.getElementById('chat-file-form');
 
             // Scroll to bottom of messages
             function scrollToBottom() {
@@ -340,6 +349,34 @@
                     messagesContainer.appendChild(messageDiv);
                     scrollToBottom();
                 }
+
+                if (data.type === 'chat.file') {
+                    // Create message element
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${data.is_sender ? 'sent' : 'received'}`;
+                    
+                    messageDiv.innerHTML = `
+                    <div class="message-info">
+                        ${data.username} • ${data.timestamp}
+                    </div>
+                    <div class="message-content">
+                        ${data.message}
+                    </div>
+                `;
+                    // jeśli wiadomość zawiera plik
+                    if (data.file_url) {
+                        // zamiast "const img = ..." (które może się powtarzać)
+                        // tworzysz nowy element w osobnej zmiennej
+                        const imageElement = document.createElement("img");
+                        imageElement.src = data.file_url;
+                        imageElement.alt = "uploaded file";
+
+                        // doklejasz obrazek do treści wiadomości
+                        messageDiv.querySelector(".message-content").appendChild(imageElement);
+                    }
+                    messagesContainer.appendChild(messageDiv);
+                    scrollToBottom();
+                }
             };
 
             chatSocket.onclose = function(e) {
@@ -348,7 +385,6 @@
 
             messageForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const message = messageInput.value.trim();
                 if (message) {
                     // Send message to WebSocket
@@ -360,6 +396,25 @@
                     // Clear input
                     messageInput.value = '';
                 }
+            });
+
+            chatFileForm.addEventListener('submit', function(e){
+                console.log("hello world");
+                    const message = fileInput.files[0];
+                    if(message){
+                        const reader = new FileReader();
+                        reader.onload = function(event){
+                            const base64file = event.target.result;
+
+                            chatSocket.send(JSON.stringify({
+                            'type': 'chat.file',
+                            'fileName': message.name,
+                            'filetype': message.type,
+                            'fileData': base64file
+                        }));
+                        };
+                        reader.readAsDataURL(message);
+                    }
             });
 
             // Handle reconnection
