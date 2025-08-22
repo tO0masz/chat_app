@@ -315,7 +315,7 @@
         
         <form class="chat-input" id="chat-file-form">
             {% csrf_token %}
-            <input type="file" id="chat-file-input" name="file" required>
+            <input type="file" id="chat-file-input" name="file" accept="image/*" required>
             <button type="submit" id="chat-file-submit">Upload</button>
         </form>
 
