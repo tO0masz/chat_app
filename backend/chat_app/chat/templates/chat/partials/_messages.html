@@ -3,13 +3,15 @@
         <div class="message-info">
             {{ message.sender.username }} - {{ message.timestamp|date:"M d, Y H:i" }}
         </div>
+        {% if message.content != None %}
         <div class="message-content">
-            {% if message.content != None %}
                 {{ message.content }}
-            {% else %}
-                <img src="{{ message.file.url }}" alt="uploaded file">
-            {% endif %}
         </div>
+        {% else %}
+        <div class="message-file">
+            <img src="{{ message.file.url }}" alt="uploaded file">
+        </div>
+        {% endif %}
     </div>
 {% empty %}
     <p style="text-align: center; color: #666;">No messages yet. Start the conversation!</p>

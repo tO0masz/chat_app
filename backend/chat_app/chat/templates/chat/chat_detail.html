@@ -133,6 +133,24 @@
             word-wrap: break-word;
         }
 
+        .message-file {
+            margin-top: 0.5rem;
+            display: inline-block;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 220px;
+            max-height: 220px;
+        }
+
+        .message-file img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
         .chat-input {
             padding: 1rem;
             border-top: 1px solid #eee;
@@ -359,20 +377,18 @@
                     <div class="message-info">
                         ${data.username} • ${data.timestamp}
                     </div>
-                    <div class="message-content">
+                    <div class="message-file">
                         ${data.message}
                     </div>
                 `;
-                    // jeśli wiadomość zawiera plik
                     if (data.file_url) {
-                        // zamiast "const img = ..." (które może się powtarzać)
-                        // tworzysz nowy element w osobnej zmiennej
                         const imageElement = document.createElement("img");
                         imageElement.src = data.file_url;
                         imageElement.alt = "uploaded file";
 
-                        // doklejasz obrazek do treści wiadomości
-                        messageDiv.querySelector(".message-content").appendChild(imageElement);
+                        imageElement.onload = () => scrollToBottom();
+
+                        messageDiv.querySelector(".message-file").appendChild(imageElement);
                     }
                     messagesContainer.appendChild(messageDiv);
                     scrollToBottom();
@@ -399,7 +415,7 @@
             });
 
             chatFileForm.addEventListener('submit', function(e){
-                console.log("hello world");
+                    e.preventDefault();
                     const message = fileInput.files[0];
                     if(message){
                         const reader = new FileReader();
