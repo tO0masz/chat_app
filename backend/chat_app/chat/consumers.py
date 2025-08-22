@@ -118,6 +118,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_file(self, event):
         # Send file message to WebSocket
+        event['is_sender'] = self.user.username == event['username']
         await self.send(text_data=json.dumps(event))
 
     async def chat_message(self, event):
