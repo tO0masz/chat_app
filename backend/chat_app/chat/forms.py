@@ -19,7 +19,7 @@ class NewChatForm(forms.ModelForm):
             self.fields['participants'].queryset = user
             self.initial['participants'] = list(user.values_list('id', flat=True))
             self.fields['participants'].disabled = True
-        elif 'participants' in kwargs:
+        elif 'user' in kwargs:
             user = kwargs.pop('user')
             super().__init__(*args, **kwargs)
             self.fields['participants'].queryset = get_friends(user)
